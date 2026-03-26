@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>わたしのお財布 — 日本人の自由度マップ</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#faf9f6;--tx:#1a1a1a;--tx2:#666;--tx3:#999;--bd:#ddd;--accent:#D85A30;--blue:#378ADD;--green:#3a9a5c;--card:#fff;--purple:#8B5CF6;--gold:#D4A017;--silver:#A0A0A0;--bronze:#CD7F32;--good:#2B7AB8;--bad:#D85A30;}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1a1a;--tx:#eee;--tx2:#aaa;--tx3:#666;--bd:#444;--card:#242422;}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;}
+
+/* HERO */
+.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;padding:40px 20px;text-align:center;background:#111 url(hero.jpg) center/cover no-repeat;color:#faf9f6;}
+.hero-bg{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:0;}.hero-grid{position:absolute;inset:0;opacity:.04;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px);pointer-events:none;}
+.hero>*{position:relative;z-index:1;}.hero-top{font-size:clamp(11px,2vw,14px);letter-spacing:.3em;color:rgba(255,255,255,.4);margin:0 0 24px;font-weight:300;}
+.hero-q{font-size:clamp(42px,10vw,90px);font-weight:900;line-height:1.1;letter-spacing:-.02em;margin:0;}
+.hero-q .accent{color:var(--bad);}.hero-q .blue{color:var(--good);}
+.hero-sub{font-size:clamp(14px,3vw,20px);font-weight:300;color:rgba(255,255,255,.6);margin:16px 0 0;line-height:1.6;}
+.hero-nums{display:flex;gap:clamp(16px,5vw,48px);justify-content:center;margin:36px 0 0;flex-wrap:wrap;}
+.hero-num{text-align:center;}.hero-num .val{font-size:clamp(36px,8vw,72px);font-weight:900;line-height:1;}.hero-num .unit{font-size:clamp(14px,2.5vw,20px);font-weight:300;color:rgba(255,255,255,.5);}.hero-num .label{font-size:clamp(11px,1.8vw,14px);color:rgba(255,255,255,.35);margin:4px 0 0;}
+.hero-vs{font-size:clamp(20px,4vw,36px);font-weight:900;color:rgba(255,255,255,.15);align-self:center;}
+.hero-punch{margin:40px 0 0;font-size:clamp(16px,3.5vw,28px);font-weight:700;line-height:1.5;}
+.hero-punch .em{background:var(--bad);color:#fff;padding:2px 8px;display:inline-block;margin:2px 0;}
+.hero-cta{display:inline-block;margin:32px 0 0;padding:14px 40px;background:var(--bad);color:#fff;border:none;border-radius:30px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(216,90,48,.4);}
+.hero-scroll{margin:40px 0 0;font-size:12px;color:rgba(255,255,255,.3);animation:pulse 2s infinite;}.hero-scroll span{display:block;font-size:24px;margin:4px 0 0;}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+
+.wrap{max-width:880px;margin:0 auto;padding:12px 16px 60px;}
+h1{font-size:20px;font-weight:500;margin:0 0 4px;}
+.sub{font-size:12px;color:var(--tx2);margin:0 0 14px;}
+.tabs{display:flex;gap:4px;margin:0 0 12px;flex-wrap:wrap;}
+.tab{padding:6px 16px;border-radius:20px;font-size:13px;border:1px solid var(--bd);background:none;color:var(--tx);cursor:pointer;transition:all .2s;}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.tab:hover:not(.active){background:var(--bd);}
+.panel{display:none;}.panel.active{display:block;}
+.wf-wrap{background:var(--card);border-radius:12px;padding:16px;margin:0 0 12px;}
+.wf-title{font-size:14px;font-weight:500;margin:0 0 2px;}
+.wf-sub{font-size:11px;color:var(--tx3);margin:0 0 10px;}
+.insight{background:var(--card);border-left:3px solid var(--good);border-radius:0 8px 8px 0;padding:14px 16px;margin:16px 0;font-size:14px;line-height:2;}
+.insight b{color:var(--good);}.insight .big{font-size:22px;font-weight:700;}.insight .pct{font-size:16px;font-weight:600;color:var(--bad);}.insight .punch{font-size:16px;font-weight:700;color:var(--bad);display:block;margin-top:4px;}
+.defs{background:var(--card);border-radius:12px;padding:16px;margin:0 0 16px;border:1px solid var(--bd);}
+.defs-title{font-size:13px;font-weight:600;margin:0 0 8px;color:var(--tx2);}
+.def-item{display:flex;gap:8px;margin:0 0 8px;font-size:12px;line-height:1.5;}.def-term{flex-shrink:0;font-weight:700;min-width:90px;font-size:15px;}.def-eq{color:var(--tx3);font-family:'Courier New',monospace;font-size:11px;}
+
+/* Sliders */
+.my-section{background:var(--card);border:2px solid var(--accent);border-radius:12px;padding:16px;margin:20px 0 12px;}
+.my-title{font-size:15px;font-weight:600;color:var(--accent);margin:0 0 4px;}.my-sub{font-size:11px;color:var(--tx3);margin:0 0 12px;}
+.slider-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px 16px;}
+.slider-item{display:flex;flex-direction:column;gap:2px;}
+.slider-label{font-size:11px;color:var(--tx2);display:flex;justify-content:space-between;}
+.slider-val{font-weight:600;color:var(--tx);font-size:12px;}
+.slider-item input[type=range]{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:var(--bd);border-radius:3px;outline:none;}
+.slider-item input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.my-result{display:flex;gap:16px;margin:16px 0 0;flex-wrap:wrap;align-items:center;justify-content:center;}
+.my-metric{text-align:center;}
+.my-metric .mv{font-size:28px;font-weight:800;}.my-metric .ml{font-size:10px;color:var(--tx3);}
+.my-share{margin:12px 0 0;text-align:center;}
+.share-btn{padding:8px 24px;border-radius:20px;font-size:13px;border:none;cursor:pointer;font-weight:600;transition:all .2s;}
+.share-btn:hover{transform:translateY(-1px);}
+
+/* Podium etc */
+.podium-area{margin:0 0 20px;}.podium{display:flex;justify-content:center;align-items:flex-end;gap:12px;padding:20px 0 0;}
+.pod{display:flex;flex-direction:column;align-items:center;}.pod-bubble{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.15);}.pod-medal{font-size:22px;margin:4px 0 2px;}.pod-name{font-size:14px;font-weight:600;margin:0 0 2px;}.pod-sub{font-size:11px;color:var(--tx2);text-align:center;line-height:1.4;}.pod-stand{border-radius:8px 8px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:10px;color:#fff;font-size:24px;font-weight:800;margin-top:6px;}
+.city-pills{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px;}.pill{padding:4px 12px;border-radius:14px;font-size:12px;border:1px solid var(--bd);background:none;color:var(--tx);cursor:pointer;transition:all .15s;}.pill.on{background:var(--good);color:#fff;border-color:var(--good);}
+.cmp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0;}.cmp-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--bd);}.cmp-card.rank1{border-color:var(--gold);border-width:2px;}.cmp-card.rank2{border-color:var(--silver);border-width:2px;}.cmp-card.rank3{border-color:var(--bronze);border-width:2px;}.cmp-city{font-size:15px;font-weight:600;margin:0 0 6px;}.cmp-row{display:flex;justify-content:space-between;font-size:12px;padding:2px 0;}.cmp-sep{border-top:2px solid var(--bd);margin:8px 0;padding:8px 0 0;}.cmp-bar{height:8px;background:var(--bd);border-radius:4px;margin:3px 0 6px;overflow:hidden;}.cmp-fill{height:100%;border-radius:4px;transition:width .5s;}.cmp-metric{margin-bottom:10px;}.cmp-metric-label{font-size:10px;color:var(--tx3);}.cmp-metric-val{font-size:22px;font-weight:700;}
+.tile-city{cursor:pointer;transition:transform .2s;}.tile-city:hover{transform:scale(1.15);}
+.rank-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--bd);}.rank-table th{font-size:10px;color:var(--tx3);font-weight:500;padding:8px 6px;text-align:right;border-bottom:2px solid var(--bd);position:sticky;top:0;background:var(--card);cursor:pointer;user-select:none;white-space:nowrap;}.rank-table th:first-child,.rank-table th:nth-child(2){text-align:left;}.rank-table th:hover{color:var(--tx);}.rank-table th.sorted{color:var(--accent);font-weight:700;}.rank-table th.sorted::after{content:' ▼';font-size:8px;}.rank-table td{font-size:12px;padding:7px 6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap;}.rank-table td:first-child{text-align:center;font-weight:700;width:32px;}.rank-table td:nth-child(2){text-align:left;font-weight:500;}.rank-table tr:last-child td{border-bottom:none;}.rank-table tr:hover{background:rgba(43,122,184,.05);}.rank-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:11px;color:#fff;}.rank-idx-bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-right:4px;}
+
+/* Japan map - absolute positioned tiles */
+.japan-map{position:relative;width:100%;max-width:680px;margin:0 auto 16px;height:580px;}
+.japan-map .region{position:absolute;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px;}
+.japan-map .region-name{font-size:10px;color:var(--tx3);font-weight:500;text-align:center;margin:0 0 4px;}
+.japan-map .region-cities{display:flex;flex-direction:row;gap:4px;justify-content:center;align-items:flex-end;}
+
+.note{font-size:10px;color:var(--tx3);line-height:1.5;margin:16px 0 0;}.ft{font-size:10px;color:var(--tx3);margin:12px 0 0;text-align:center;}.ft a{color:var(--tx2);text-decoration:none;}
+#tip{position:fixed;display:none;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;font-size:12px;pointer-events:none;z-index:100;max-width:250px;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,.12);}
+svg text{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;}
+</style>
+</head>
+<body>
+<section class="hero" id="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-top">W A T A S H I &nbsp; N O &nbsp; O S A I F U</div>
+  <div class="hero-main">
+    <h1 class="hero-q">あなたは<br><span class="accent">本当に</span><br><span class="blue">自由</span>ですか</h1>
+    <p class="hero-sub">手取りの額面は、自由の額面ではない。</p>
+  </div>
+  <div class="hero-nums">
+    <div class="hero-num"><div class="val" style="color:var(--bad)">42<span class="unit">%</span></div><div class="label">お金の自由</div></div>
+    <div class="hero-vs">×</div>
+    <div class="hero-num"><div class="val" style="color:var(--bad)">11<span class="unit">%</span></div><div class="label">時間の自由</div></div>
+  </div>
+  <div class="hero-punch">手取り51.9万のうち<span class="em">自由なのは21.7万</span><br>24時間のうち<span class="em">自由なのは2.6時間</span></div>
+  <a class="hero-cta" href="#main" onclick="document.getElementById('main').scrollIntoView({behavior:'smooth'});return false;">数字を見る ↓</a>
+  <div class="hero-scroll">scroll<span>↓</span></div>
+</section>
+
+<div class="wrap" id="main">
+<h1>わたしのお財布</h1>
+<p class="sub">同じ年収でも、住む場所で人生が変わる — お金と時間の「真の自由度」マップ</p>
+<div class="defs">
+  <div class="defs-title">📐 このツールの指標</div>
+  <div class="def-item"><span class="def-term" style="color:var(--green)">自由資金</span><span>可処分所得から全支出を引いた額。裁量で動かせるお金。<br><span class="def-eq">= 可処分所得 − 全消費支出</span></span></div>
+  <div class="def-item"><span class="def-term" style="color:var(--good)">自由時間</span><span>1日から必須活動を引いた時間。<br><span class="def-eq">= 24h − 睡眠8h − 労働8h − 通勤 − 家事1.5h − 食事1.5h − 身支度1h</span></span></div>
+  <div class="def-item"><span class="def-term" style="color:var(--accent)">自由度指数</span><span>自由資金×自由時間を物価補正した総合スコア。<br><span class="def-eq">= (自由資金÷1万) × 自由時間 ÷ (物価÷100)</span></span></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="waterfall">💴 お金と時間の滝</button>
+  <button class="tab" data-tab="compare">🏆 地域で比べる</button>
+  <button class="tab" data-tab="ranking">📋 ランキング</button>
+  <button class="tab" data-tab="map">🗾 地図で見る</button>
+</div>
+
+<div class="panel active" id="p-waterfall">
+  <div class="wf-wrap"><div class="wf-title">💴 日本人の1ヶ月のお金（全国平均）</div><div class="wf-sub">二人以上の世帯・勤労者世帯（2023年 家計調査）</div><svg id="wfMoney" width="100%"></svg></div>
+  <div class="wf-wrap"><div class="wf-title">⏰ 日本人の1日の時間（全国平均）</div><div class="wf-sub">平日平均（社会生活基本調査ベース）</div><svg id="wfTime" width="100%"></svg></div>
+  <div class="insight">手取り<span class="big">51.9万円</span>のうち、自由に使えるのは<span class="big">21.7万円</span><span class="pct">（42%）</span><br>24時間のうち、自分のために使えるのは<span class="big">2.6時間</span><span class="pct">（11%）</span><br><span class="punch">お金の4割、時間の1割——これが日本人の「自由」の正体。</span></div>
+
+  <!-- MY WALLET SLIDERS -->
+  <div class="my-section">
+    <div class="my-title">🪞 わたしの自由度を計算する</div>
+    <div class="my-sub">あなたの数字を入れてみよう。スライダーで調整すると自動計算されます。</div>
+    <div class="slider-grid">
+      <div class="slider-item"><div class="slider-label"><span>💰 手取り月収</span><span class="slider-val" id="sv-income">30万</span></div><input type="range" min="15" max="80" value="30" step="1" oninput="updateMy();" id="sl-income"></div>
+      <div class="slider-item"><div class="slider-label"><span>🏠 家賃</span><span class="slider-val" id="sv-rent">7万</span></div><input type="range" min="0" max="20" value="7" step="0.5" oninput="updateMy();" id="sl-rent"></div>
+      <div class="slider-item"><div class="slider-label"><span>🍚 食費</span><span class="slider-val" id="sv-food">5万</span></div><input type="range" min="2" max="15" value="5" step="0.5" oninput="updateMy();" id="sl-food"></div>
+      <div class="slider-item"><div class="slider-label"><span>🚃 交通・通信</span><span class="slider-val" id="sv-transport">3万</span></div><input type="range" min="0" max="10" value="3" step="0.5" oninput="updateMy();" id="sl-transport"></div>
+      <div class="slider-item"><div class="slider-label"><span>💡 光熱・水道</span><span class="slider-val" id="sv-utility">1.5万</span></div><input type="range" min="0.5" max="5" value="1.5" step="0.5" oninput="updateMy();" id="sl-utility"></div>
+      <div class="slider-item"><div class="slider-label"><span>🎯 その他支出</span><span class="slider-val" id="sv-other">5万</span></div><input type="range" min="0" max="20" value="5" step="0.5" oninput="updateMy();" id="sl-other"></div>
+      <div class="slider-item"><div class="slider-label"><span>🚶 通勤（片道）</span><span class="slider-val" id="sv-commute">30分</span></div><input type="range" min="0" max="90" value="30" step="5" oninput="updateMy();" id="sl-commute"></div>
+      <div class="slider-item"><div class="slider-label"><span>😴 睡眠</span><span class="slider-val" id="sv-sleep">7h</span></div><input type="range" min="5" max="10" value="7" step="0.5" oninput="updateMy();" id="sl-sleep"></div>
+    </div>
+    <div class="my-result" id="myResult"></div>
+    <div class="my-share">
+      <button class="share-btn" style="background:var(--good);color:#fff;" onclick="shareMyWallet();">𝕏 で自由度をシェア</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p-compare">
+  <p style="font-size:12px;color:var(--tx2);margin:0 0 8px;">都市をタップで入れ替え（2〜3都市）</p>
+  <div class="city-pills" id="pills"></div>
+  <div class="podium-area" id="podiumArea"></div>
+  <div class="cmp-grid" id="cmpGrid"></div>
+  <div class="insight" id="cmpInsight"></div>
+</div>
+
+<div class="panel" id="p-ranking">
+  <p style="font-size:12px;color:var(--tx2);margin:0 0 10px;">列ヘッダーをタップで並び替え</p>
+  <div style="overflow-x:auto;border-radius:12px;"><table class="rank-table" id="rankTable"></table></div>
+  <div class="insight" id="rankInsight" style="margin-top:12px;"></div>
+</div>
+
+<div class="panel" id="p-map">
+  <p style="font-size:12px;color:var(--tx2);margin:0 0 10px;">バブル = 可処分所得　色 = 自由度（<span style="color:var(--good)">■ 青=高い</span> / <span style="color:var(--bad)">■ 赤=低い</span>）</p>
+  <div id="tileMap"></div>
+  <div class="insight" style="margin-top:4px;"><b>東京は稼ぐけど、自由度は<span style="color:var(--bad)">赤</span>。</b>地方ほど<span style="color:var(--good)">青</span>が多い。年収の高さ ≠ 人生の自由度。</div>
+</div>
+
+<div id="tip"></div>
+<p class="note">データソース（予定）: 総務省「家計調査」/ 厚労省「賃金構造基本統計調査」/ 総務省「住宅・土地統計調査」/ CPI地域差指数<br>※ 現在はモックデータ。Phase 2で実データに差し替え。</p>
+<p class="ft"><a href="https://osakenpiro.github.io/boku-no-wakusei/">osakenpiro</a> — 『学問のすすめ -ルネサンス-』データ基盤</p>
+</div>
+
+<script>
+const dk=matchMedia('(prefers-color-scheme:dark)').matches;
+const CS={bg:dk?'#1a1a1a':'#faf9f6',tx:dk?'#eee':'#1a1a1a',tx2:dk?'#aaa':'#666',tx3:dk?'#666':'#999',bd:dk?'#444':'#ddd',card:dk?'#242422':'#fff',accent:'#D85A30',blue:'#378ADD',green:'#3a9a5c',purple:'#8B5CF6',gold:'#D4A017',silver:'#A0A0A0',bronze:'#CD7F32',good:'#2B7AB8',bad:'#D85A30'};
+const CITIES={sapporo:{name:'札幌',region:'hokkaido',income:550000,tax:110000,rent:45000,food:78000,transport:45000,utility:30000,edu:10000,health:12000,cloth:9000,ent:28000,other:43000,commuteMin:35,cpi:99.1},sendai:{name:'仙台',region:'tohoku',income:560000,tax:112000,rent:48000,food:76000,transport:42000,utility:28000,edu:11000,health:12000,cloth:9000,ent:27000,other:41000,commuteMin:33,cpi:99.5},tokyo23:{name:'東京23区',region:'kanto',income:700000,tax:160000,rent:120000,food:90000,transport:60000,utility:22000,edu:18000,health:15000,cloth:15000,ent:40000,other:55000,commuteMin:50,cpi:105.2},yokohama:{name:'横浜',region:'kanto',income:660000,tax:148000,rent:90000,food:85000,transport:55000,utility:23000,edu:16000,health:14000,cloth:13000,ent:35000,other:50000,commuteMin:48,cpi:103.8},saitama:{name:'さいたま',region:'kanto',income:640000,tax:140000,rent:75000,food:83000,transport:52000,utility:24000,edu:14000,health:13000,cloth:11000,ent:32000,other:46000,commuteMin:46,cpi:102.0},niigata:{name:'新潟',region:'chubu',income:530000,tax:106000,rent:42000,food:74000,transport:40000,utility:28000,edu:10000,health:11000,cloth:8000,ent:24000,other:39000,commuteMin:30,cpi:98.5},toyama:{name:'富山',region:'chubu',income:600000,tax:120000,rent:40000,food:75000,transport:35000,utility:25000,edu:10000,health:12000,cloth:8000,ent:25000,other:40000,commuteMin:30,cpi:97.5},nagoya:{name:'名古屋',region:'chubu',income:600000,tax:125000,rent:55000,food:80000,transport:50000,utility:25000,edu:12000,health:13000,cloth:10000,ent:30000,other:45000,commuteMin:38,cpi:100.5},osaka:{name:'大阪',region:'kinki',income:620000,tax:130000,rent:70000,food:82000,transport:50000,utility:23000,edu:14000,health:14000,cloth:12000,ent:35000,other:48000,commuteMin:45,cpi:102.5},kobe:{name:'神戸',region:'kinki',income:580000,tax:116000,rent:58000,food:78000,transport:45000,utility:24000,edu:12000,health:12000,cloth:10000,ent:28000,other:42000,commuteMin:40,cpi:101.2},hiroshima:{name:'広島',region:'chugoku',income:540000,tax:108000,rent:45000,food:75000,transport:40000,utility:26000,edu:10000,health:11000,cloth:8000,ent:25000,other:40000,commuteMin:30,cpi:98.8},matsuyama:{name:'松山',region:'shikoku',income:510000,tax:102000,rent:40000,food:72000,transport:35000,utility:25000,edu:9000,health:11000,cloth:8000,ent:23000,other:38000,commuteMin:28,cpi:98.2},fukuoka:{name:'福岡',region:'kyushu',income:580000,tax:115000,rent:55000,food:80000,transport:40000,utility:24000,edu:11000,health:13000,cloth:10000,ent:30000,other:42000,commuteMin:32,cpi:100.3},naha:{name:'那覇',region:'kyushu',income:450000,tax:80000,rent:50000,food:70000,transport:30000,utility:23000,edu:8000,health:10000,cloth:7000,ent:20000,other:35000,commuteMin:25,cpi:99.8}};
+function calc(c){const disp=c.income-c.tax;const spend=c.rent+c.food+c.transport+c.utility+c.edu+c.health+c.cloth+c.ent+c.other;const freeMoney=disp-spend;const freeH=Math.round((24-8-8-(c.commuteMin*2/60)-1.5-1.5-1.0)*10)/10;const idx=Math.round((freeMoney/10000)*freeH/(c.cpi/100)*10)/10;return{...c,disp,spend,freeMoney,freeH,idx};}
+const COMP={};for(const[k,v]of Object.entries(CITIES))COMP[k]=calc(v);
+function fmtY(v){const a=Math.abs(v);return(v<0?'-':'')+(a>=10000?(a/10000).toFixed(1)+'万':a.toLocaleString()+'円');}
+function fmtH(v){return(v<0?'-':'')+Math.abs(v).toFixed(1)+'h';}
+function fColor(idx){const vals=Object.values(COMP);const mn=Math.min(...vals.map(v=>v.idx)),mx=Math.max(...vals.map(v=>v.idx));const t=Math.max(0,Math.min(1,(idx-mn)/(mx-mn)));const stops=[[210,70,40],[220,140,30],[200,180,50],[40,160,100],[43,122,184]];const seg=t*(stops.length-1);const i=Math.min(Math.floor(seg),stops.length-2);const f=seg-i;return`rgb(${Math.round(stops[i][0]+(stops[i+1][0]-stops[i][0])*f)},${Math.round(stops[i][1]+(stops[i+1][1]-stops[i][1])*f)},${Math.round(stops[i][2]+(stops[i+1][2]-stops[i][2])*f)})`;}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('p-'+btn.dataset.tab).classList.add('active');if(btn.dataset.tab==='waterfall'){drawWF('wfMoney',MONEY,fmtY);drawWF('wfTime',TIME,fmtH);updateMy();}if(btn.dataset.tab==='map')drawTileMap();if(btn.dataset.tab==='compare'){renderPills();renderCmp();}if(btn.dataset.tab==='ranking')renderRanking();});});
+
+// Waterfall
+function drawWF(svgId,items,fmtFn){const svg=document.getElementById(svgId);const pW=svg.parentElement.clientWidth-32;const W=Math.max(pW,360);const ML=95,MR=70,MT=6,gap=4,barN=22,barS=30;const cW=W-ML-MR;let running=0;const bars=[];for(const d of items){if(d.type==='start'){running=d.value;bars.push({...d,x0:0,x1:d.value,run:running});}else if(d.type==='sub'){const p=running;running+=d.value;bars.push({...d,x0:Math.min(p,running),x1:Math.max(p,running),run:running});}else{bars.push({...d,value:running,x0:0,x1:running,run:running});}}const mx=Math.max(...bars.map(b=>b.x1));let totalH=MT;bars.forEach(d=>{totalH+=((d.type==='subtotal'||d.type==='total'?barS:barN)+gap);});totalH+=20;svg.setAttribute('viewBox',`0 0 ${W} ${totalH}`);const s=v=>(v/mx)*cW;let html='';const tks=[0,mx*.25,mx*.5,mx*.75,mx];for(const t of tks){const x=ML+s(t);html+=`<line x1="${x}" x2="${x}" y1="${MT}" y2="${totalH-18}" stroke="${CS.bd}" stroke-dasharray="2,3"/>`;html+=`<text x="${x}" y="${totalH-4}" text-anchor="middle" font-size="9" fill="${CS.tx3}">${fmtFn(t)}</text>`;}let cy=MT;bars.forEach((d,i)=>{const isStart=d.type==='start';const isSm=d.type==='subtotal'||d.type==='total';const bH=isSm?barS:barN;const y=cy;cy+=bH+gap;const bx=ML+s(d.x0);const bw=Math.max(2,s(d.x1)-s(d.x0));const barColor=isStart?CS.bd:d.color;const barOpacity=isStart?0.5:(isSm?1:.8);if(isSm){html+=`<rect x="0" y="${y-3}" width="${W}" height="${bH+6}" rx="4" fill="${d.color}" opacity=".07"/>`;}if(i>0&&d.type==='sub'){const pr=bars[i-1].run;html+=`<line x1="${ML+s(pr)}" x2="${ML+s(pr)}" y1="${y-gap}" y2="${y+bH*.5}" stroke="${CS.bd}" stroke-dasharray="2,2"/>`;}html+=`<rect x="${bx}" y="${y}" width="${bw}" height="${bH}" rx="${isSm?5:3}" fill="${barColor}" opacity="${barOpacity}"/>`;if(isSm)html+=`<rect x="${bx}" y="${y}" width="${bw}" height="${bH}" rx="5" fill="none" stroke="${d.color}" stroke-width="2.5"/>`;if(isStart)html+=`<rect x="${bx}" y="${y}" width="${bw}" height="${bH}" rx="3" fill="none" stroke="${CS.bd}" stroke-width="1" stroke-dasharray="4,2"/>`;const labelColor=isStart?CS.tx3:(isSm?d.color:CS.tx);html+=`<text x="${ML-6}" y="${y+bH/2+1}" text-anchor="end" dominant-baseline="middle" font-size="${isSm?13:11}" fill="${labelColor}" font-weight="${isSm?700:400}">${d.label}</text>`;const vt=fmtFn(d.type==='sub'?d.value:d.value);const vSize=isSm?13:10;const valColor=isStart?CS.tx3:'#fff';if(bw>40){html+=`<text x="${bx+bw/2}" y="${y+bH/2+1}" text-anchor="middle" dominant-baseline="middle" font-size="${vSize}" fill="${valColor}" font-weight="${isSm?700:500}">${vt}</text>`;}else{html+=`<text x="${bx+bw+5}" y="${y+bH/2+1}" text-anchor="start" dominant-baseline="middle" font-size="${vSize}" fill="${isSm?d.color:CS.tx2}" font-weight="${isSm?700:400}">${vt}</text>`;}if(d.note){const nx=bw>40?bx+bw+6:bx+bw+48;html+=`<text x="${nx}" y="${y+bH/2+1}" text-anchor="start" dominant-baseline="middle" font-size="9" fill="${CS.bad}" font-style="italic">← ${d.note}</text>`;}});svg.innerHTML=html;}
+const MONEY=[{label:'実収入',value:654000,type:'start',color:'#bbb'},{label:'税・社会保険',value:-135000,type:'sub',color:CS.purple},{label:'＝ 可処分所得',type:'subtotal',color:CS.blue},{label:'食費',value:-85000,type:'sub',color:'#E67E22'},{label:'住居',value:-20000,type:'sub',color:'#E74C3C',note:'持家平均のワナ'},{label:'交通・通信',value:-55000,type:'sub',color:'#3498DB'},{label:'光熱・水道',value:-25000,type:'sub',color:'#1ABC9C'},{label:'教育',value:-12000,type:'sub',color:'#9B59B6'},{label:'保健医療',value:-15000,type:'sub',color:'#27AE60'},{label:'被服',value:-10000,type:'sub',color:'#F39C12'},{label:'教養娯楽',value:-30000,type:'sub',color:'#E91E63'},{label:'その他',value:-50000,type:'sub',color:'#95A5A6'},{label:'＝ 黒字（貯蓄等）',type:'total',color:'#2ECC71'}];
+const TIME=[{label:'24時間',value:24,type:'start',color:'#bbb'},{label:'睡眠',value:-8.0,type:'sub',color:'#5B6E8C'},{label:'労働',value:-8.0,type:'sub',color:CS.accent},{label:'通勤',value:-1.4,type:'sub',color:'#E67E22',note:'片道42分'},{label:'家事',value:-1.5,type:'sub',color:'#8E7CC3'},{label:'食事',value:-1.5,type:'sub',color:'#3498DB'},{label:'身支度',value:-1.0,type:'sub',color:'#95A5A6'},{label:'＝ 真の自由時間',type:'total',color:'#2ECC71'}];
+
+// ============================================================
+// MY WALLET SLIDERS
+// ============================================================
+function updateMy(){
+  const income=+document.getElementById('sl-income').value;
+  const rent=+document.getElementById('sl-rent').value;
+  const food=+document.getElementById('sl-food').value;
+  const transport=+document.getElementById('sl-transport').value;
+  const utility=+document.getElementById('sl-utility').value;
+  const other=+document.getElementById('sl-other').value;
+  const commute=+document.getElementById('sl-commute').value;
+  const sleep=+document.getElementById('sl-sleep').value;
+  document.getElementById('sv-income').textContent=income+'万';
+  document.getElementById('sv-rent').textContent=rent+'万';
+  document.getElementById('sv-food').textContent=food+'万';
+  document.getElementById('sv-transport').textContent=transport+'万';
+  document.getElementById('sv-utility').textContent=utility+'万';
+  document.getElementById('sv-other').textContent=other+'万';
+  document.getElementById('sv-commute').textContent=commute+'分';
+  document.getElementById('sv-sleep').textContent=sleep+'h';
+  const freeMoney=income-rent-food-transport-utility-other;
+  const freeTime=Math.round((24-sleep-8-(commute*2/60)-1.5-1.5-1.0)*10)/10;
+  const freeIdx=Math.round(freeMoney*freeTime*10)/10;
+  const moneyPct=Math.round(freeMoney/income*100);
+  const timePct=Math.round(freeTime/24*100);
+  const el=document.getElementById('myResult');
+  el.innerHTML=`
+    <div class="my-metric"><div class="mv" style="color:var(--green)">${freeMoney.toFixed(1)}<span style="font-size:14px">万</span></div><div class="ml">自由資金（月）</div><div style="font-size:12px;color:var(--bad);font-weight:600">${moneyPct}%</div></div>
+    <div style="font-size:24px;font-weight:900;color:var(--bd)">×</div>
+    <div class="my-metric"><div class="mv" style="color:var(--good)">${freeTime}<span style="font-size:14px">h</span></div><div class="ml">自由時間（日）</div><div style="font-size:12px;color:var(--bad);font-weight:600">${timePct}%</div></div>
+    <div style="font-size:24px;font-weight:900;color:var(--bd)">=</div>
+    <div class="my-metric"><div class="mv" style="color:var(--accent)">${freeIdx}</div><div class="ml">わたしの自由度</div></div>`;
+  window._myData={income,freeMoney,freeTime,freeIdx,moneyPct,timePct};
+}
+function shareMyWallet(){
+  const d=window._myData||{};
+  const text=`わたしの自由度: ${d.freeIdx}\n\n手取り${d.income}万のうち自由なのは${d.freeMoney?.toFixed(1)}万（${d.moneyPct}%）\n24hのうち自由なのは${d.freeTime}h（${d.timePct}%）\n\nあなたは本当に自由ですか？\n#わたしのお財布`;
+  const url='https://osakenpiro.github.io/watashi-wallet/';
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,'_blank');
+}
+
+// Podium + Compare
+let sel=['toyama','tokyo23','naha'];
+function renderPills(){const el=document.getElementById('pills');el.innerHTML='';for(const[k,c]of Object.entries(COMP)){const b=document.createElement('button');b.className='pill'+(sel.includes(k)?' on':'');b.textContent=c.name;b.onclick=()=>{const i=sel.indexOf(k);if(i>=0){if(sel.length<=2)return;sel.splice(i,1);}else{if(sel.length>=3)sel.shift();sel.push(k);}renderPills();renderCmp();};el.appendChild(b);}}
+function renderCmp(){const ranked=sel.map(k=>({key:k,...COMP[k]})).sort((a,b)=>b.idx-a.idx);const medals=['🥇','🥈','🥉'],medalColors=[CS.gold,CS.silver,CS.bronze],standHeights=[130,95,72],standWidths=[110,95,95],bubbleSizes=[80,58,48],rankClasses=['rank1','rank2','rank3'];const area=document.getElementById('podiumArea');const podOrder=ranked.length===3?[ranked[1],ranked[0],ranked[2]]:ranked.length===2?[ranked[1],ranked[0]]:[ranked[0]];const podRanks=ranked.length===3?[1,0,2]:ranked.length===2?[1,0]:[0];let ph='<div class="podium">';podOrder.forEach((c,pi)=>{const ri=podRanks[pi];const bS=bubbleSizes[ri];const sH=standHeights[ri];const sW=standWidths[ri];const col=medalColors[ri];ph+=`<div class="pod"><div class="pod-bubble" style="width:${bS}px;height:${bS}px;background:${fColor(c.idx)};border:3px solid ${col};"><span style="font-size:${Math.round(bS*.32)}px">${c.idx}</span></div><div class="pod-medal">${medals[ri]}</div><div class="pod-name">${c.name}</div><div class="pod-sub">${fmtY(c.freeMoney)} / ${c.freeH}h</div><div class="pod-stand" style="width:${sW}px;height:${sH}px;background:${col};">${ri+1}</div></div>`;});ph+='</div>';area.innerHTML=ph;const grid=document.getElementById('cmpGrid');grid.innerHTML='';const maxIdx=Math.max(...ranked.map(c=>c.idx)),maxFM=Math.max(...ranked.map(c=>c.freeMoney)),maxFH=Math.max(...ranked.map(c=>c.freeH));ranked.forEach((c,ri)=>{const d=document.createElement('div');d.className='cmp-card '+rankClasses[ri];d.innerHTML=`<div class="cmp-city">${medals[ri]} ${c.name}</div><div class="cmp-row"><span style="color:var(--tx2)">実収入</span><span>${fmtY(c.income)}</span></div><div class="cmp-row"><span style="color:var(--tx2)">税・社保</span><span style="color:var(--bad)">-${fmtY(c.tax)}</span></div><div class="cmp-row"><span style="color:var(--tx2)">可処分所得</span><span style="font-weight:500">${fmtY(c.disp)}</span></div><div class="cmp-row"><span style="color:var(--tx2)">家賃</span><span style="color:var(--bad)">-${fmtY(c.rent)}</span></div><div class="cmp-row"><span style="color:var(--tx2)">食費</span><span>-${fmtY(c.food)}</span></div><div class="cmp-row"><span style="color:var(--tx2)">通勤（片道）</span><span>${c.commuteMin}分</span></div><div class="cmp-row"><span style="color:var(--tx2)">物価指数</span><span>${c.cpi}</span></div><div class="cmp-sep"><div class="cmp-metric"><div class="cmp-metric-label">自由資金</div><div class="cmp-metric-val" style="color:var(--green)">${fmtY(c.freeMoney)}</div><div class="cmp-bar"><div class="cmp-fill" style="width:${c.freeMoney/maxFM*100}%;background:var(--green)"></div></div></div><div class="cmp-metric"><div class="cmp-metric-label">自由時間</div><div class="cmp-metric-val" style="color:var(--good)">${c.freeH}h / 日</div><div class="cmp-bar"><div class="cmp-fill" style="width:${c.freeH/maxFH*100}%;background:var(--good)"></div></div></div><div class="cmp-metric"><div class="cmp-metric-label">自由度指数</div><div class="cmp-metric-val" style="color:${fColor(c.idx)}">${c.idx}</div><div class="cmp-bar"><div class="cmp-fill" style="width:${c.idx/maxIdx*100}%;background:${fColor(c.idx)}"></div></div></div></div>`;grid.appendChild(d);});const ins=document.getElementById('cmpInsight');const tk=ranked.find(c=>c.name==='東京23区');const best=ranked[0];if(tk&&best.name!=='東京23区'){ins.innerHTML=`<b>${best.name}</b>の自由度指数 <span class="big">${best.idx}</span> は、東京23区の <span class="big" style="color:var(--bad)">${tk.idx}</span> を上回る。<br>東京は稼ぐけど、<b>自由に使えるお金と時間は地方のほうが多い。</b>`;}else{ins.innerHTML=`自由度: <b>${ranked.map(c=>c.name+' '+c.idx).join(' > ')}</b><br>稼ぎの大きさと自由度は一致しない。`;}}
+
+// Ranking
+let sortKey='idx',sortDir=-1;
+const COLS=[{key:'rank',label:'#',sort:false},{key:'name',label:'都市',sort:false},{key:'income',label:'実収入',sort:true},{key:'disp',label:'可処分',sort:true},{key:'rent',label:'家賃',sort:true},{key:'freeMoney',label:'自由資金',sort:true},{key:'freeH',label:'自由時間',sort:true},{key:'commuteMin',label:'通勤',sort:true},{key:'cpi',label:'物価',sort:true},{key:'idx',label:'自由度',sort:true}];
+function renderRanking(){const table=document.getElementById('rankTable');const all=Object.entries(COMP).map(([k,c])=>({key:k,...c}));all.sort((a,b)=>{const av=a[sortKey],bv=b[sortKey];if(typeof av==='string')return sortDir*av.localeCompare(bv);return sortDir*(av-bv);});const vals=all.map(c=>c.idx);const mnIdx=Math.min(...vals),mxIdx=Math.max(...vals);let html='<thead><tr>';COLS.forEach(col=>{const isSorted=col.key===sortKey;html+=`<th class="${isSorted?'sorted':''}" ${col.sort?`onclick="toggleSort('${col.key}')"`:''}>${col.label}</th>`;});html+='</tr></thead><tbody>';all.forEach((c,i)=>{const rn=i+1;const numBg=rn<=3?[CS.gold,CS.silver,CS.bronze][rn-1]:CS.bd;const idxBarW=Math.round(((c.idx-mnIdx)/(mxIdx-mnIdx))*60);html+=`<tr><td><span class="rank-num" style="background:${numBg}">${rn}</span></td><td>${rn<=3?['🥇','🥈','🥉'][rn-1]:''} ${c.name}</td><td>${fmtY(c.income)}</td><td>${fmtY(c.disp)}</td><td>${fmtY(c.rent)}</td><td style="font-weight:600;color:var(--green)">${fmtY(c.freeMoney)}</td><td style="color:var(--good)">${c.freeH}h</td><td>${c.commuteMin}分</td><td>${c.cpi}</td><td style="font-weight:700"><span class="rank-idx-bar" style="width:${idxBarW}px;background:${fColor(c.idx)}"></span>${c.idx}</td></tr>`;});html+='</tbody>';table.innerHTML=html;const ins=document.getElementById('rankInsight');if(sortKey==='idx'){const best=all[0],worst=all[all.length-1];ins.innerHTML=`自由度1位 <b style="color:${fColor(best.idx)}">${best.name}（${best.idx}）</b>と最下位 <b style="color:${fColor(worst.idx)}">${worst.name}（${worst.idx}）</b>— 同じ日本でも<b>${(best.idx/worst.idx).toFixed(1)}倍</b>違う。`;}else{const colLabel=COLS.find(c=>c.key===sortKey)?.label||sortKey;ins.innerHTML=`<b>${colLabel}</b>で並び替え中。`;}}
+window.toggleSort=function(key){if(sortKey===key){sortDir*=-1;}else{sortKey=key;sortDir=-1;}renderRanking();};
+
+// ============================================================
+// Tile Map — absolute positioned for Japan shape
+// ============================================================
+const REGION_POS={
+  hokkaido:{left:'72%',top:'0',width:'26%'},
+  tohoku:{left:'68%',top:'16%',width:'26%'},
+  kanto:{left:'56%',top:'34%',width:'43%'},
+  chubu:{left:'24%',top:'26%',width:'34%'},
+  kinki:{left:'32%',top:'54%',width:'28%'},
+  chugoku:{left:'6%',top:'48%',width:'24%'},
+  shikoku:{left:'28%',top:'74%',width:'20%'},
+  kyushu:{left:'0%',top:'74%',width:'26%'},
+};
+const tip=document.getElementById('tip');
+function drawTileMap(){
+  const container=document.getElementById('tileMap');const vals=Object.values(COMP);
+  const mnDisp=Math.min(...vals.map(v=>v.disp)),mxDisp=Math.max(...vals.map(v=>v.disp));
+  const mnIdx=Math.min(...vals.map(v=>v.idx)),mxIdx=Math.max(...vals.map(v=>v.idx));
+  function bR(disp){return 16+Math.sqrt((disp-mnDisp)/(mxDisp-mnDisp))*24;}
+  const byRegion={};for(const[k,c]of Object.entries(COMP)){if(!byRegion[c.region])byRegion[c.region]=[];byRegion[c.region].push({key:k,...c});}
+  let html='<div class="japan-map">';
+  for(const[rid,pos]of Object.entries(REGION_POS)){
+    const cities=(byRegion[rid]||[]).sort((a,b)=>b.idx-a.idx);
+    html+=`<div class="region" style="left:${pos.left};top:${pos.top};width:${pos.width};"><div class="region-name">${{hokkaido:'北海道',tohoku:'東北',kanto:'関東',chubu:'中部',kinki:'近畿',chugoku:'中国',shikoku:'四国',kyushu:'九州・沖縄'}[rid]}</div><div class="region-cities">`;
+    cities.forEach(c=>{const r=bR(c.disp);const col=fColor(c.idx);const d=r*2;
+      html+=`<svg class="tile-city" width="${d+2}" height="${d+16}" data-key="${c.key}"><circle cx="${r+1}" cy="${r+1}" r="${r}" fill="${col}" opacity=".85" stroke="#fff" stroke-width="1.5"/><text x="${r+1}" y="${r+4}" text-anchor="middle" font-size="${r>22?11:9}" fill="#fff" font-weight="700">${c.idx}</text><text x="${r+1}" y="${d+12}" text-anchor="middle" font-size="8" fill="${CS.tx2}">${c.name}</text></svg>`;});
+    html+='</div></div>';
+  }
+  html+='</div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0 0;">';
+  html+=`<span style="font-size:10px;color:${CS.bad}">低い</span>`;
+  for(let i=0;i<=6;i++){const t=i/6;html+=`<span style="display:inline-block;width:18px;height:10px;border-radius:2px;background:${fColor(mnIdx+t*(mxIdx-mnIdx))}"></span>`;}
+  html+=`<span style="font-size:10px;color:${CS.good}">高い</span></div>`;
+  container.innerHTML=html;
+  container.querySelectorAll('.tile-city').forEach(el=>{
+    el.addEventListener('mouseenter',e=>{const c=COMP[el.dataset.key];if(!c)return;el.querySelector('circle').setAttribute('opacity','1');el.querySelector('circle').setAttribute('stroke-width','3');tip.style.display='block';tip.innerHTML=`<div style="font-weight:600;margin-bottom:4px">${c.name}</div>可処分: ${fmtY(c.disp)}<br>自由資金: <span style="color:${CS.green};font-weight:600">${fmtY(c.freeMoney)}</span><br>自由時間: <span style="color:${CS.good};font-weight:600">${c.freeH}h/日</span><br>通勤: ${c.commuteMin}分 / 物価: ${c.cpi}<br><span style="font-size:14px;font-weight:700;color:${fColor(c.idx)}">自由度 ${c.idx}</span>`;});
+    el.addEventListener('mousemove',e=>{tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-10)+'px';});
+    el.addEventListener('mouseleave',()=>{el.querySelector('circle').setAttribute('opacity','.85');el.querySelector('circle').setAttribute('stroke-width','1.5');tip.style.display='none';});
+  });
+}
+
+window.addEventListener('load',()=>{drawWF('wfMoney',MONEY,fmtY);drawWF('wfTime',TIME,fmtH);renderPills();renderCmp();updateMy();});
+window.addEventListener('resize',()=>{const t=document.querySelector('.tab.active')?.dataset.tab;if(t==='waterfall'){drawWF('wfMoney',MONEY,fmtY);drawWF('wfTime',TIME,fmtH);}if(t==='map')drawTileMap();});
+</script>
+</body>
+</html>
