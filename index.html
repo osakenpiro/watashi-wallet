@@ -11,8 +11,10 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;}
 
 /* HERO */
-.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;padding:40px 20px;text-align:center;background:#111 url(hero.jpg) center/cover no-repeat;color:#faf9f6;}
-.hero-bg{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:0;}.hero-grid{position:absolute;inset:0;opacity:.04;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px);pointer-events:none;}
+.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative;overflow:hidden;padding:0 20px 40px;text-align:center;background:#000 url(hero.jpg) center/cover no-repeat;color:#faf9f6;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(0,0,0,.7) 100%);z-index:0;}
+.hero>*{position:relative;z-index:1;}
+.hero-unused{opacity:.04;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px);pointer-events:none;}
 .hero>*{position:relative;z-index:1;}.hero-top{font-size:clamp(11px,2vw,14px);letter-spacing:.3em;color:rgba(255,255,255,.4);margin:0 0 24px;font-weight:300;}
 .hero-q{font-size:clamp(42px,10vw,90px);font-weight:900;line-height:1.1;letter-spacing:-.02em;margin:0;}
 .hero-q .accent{color:var(--bad);}.hero-q .blue{color:var(--good);}
@@ -81,18 +83,7 @@ svg text{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN
 </head>
 <body>
 <section class="hero" id="hero">
-  <div class="hero-bg"></div><div class="hero-grid"></div>
-  <div class="hero-top">W A T A S H I &nbsp; N O &nbsp; O S A I F U</div>
-  <div class="hero-main">
-    <h1 class="hero-q">あなたは<br><span class="accent">本当に</span><br><span class="blue">自由</span>ですか</h1>
-    <p class="hero-sub">手取りの額面は、自由の額面ではない。</p>
-  </div>
-  <div class="hero-nums">
-    <div class="hero-num"><div class="val" style="color:var(--bad)">42<span class="unit">%</span></div><div class="label">お金の自由</div></div>
-    <div class="hero-vs">×</div>
-    <div class="hero-num"><div class="val" style="color:var(--bad)">11<span class="unit">%</span></div><div class="label">時間の自由</div></div>
-  </div>
-  <div class="hero-punch">手取り51.9万のうち<span class="em">自由なのは21.7万</span><br>24時間のうち<span class="em">自由なのは2.6時間</span></div>
+  <div class="hero-overlay"></div>
   <a class="hero-cta" href="#main" onclick="document.getElementById('main').scrollIntoView({behavior:'smooth'});return false;">数字を見る ↓</a>
   <div class="hero-scroll">scroll<span>↓</span></div>
 </section>
