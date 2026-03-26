@@ -11,8 +11,8 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;}
 
 /* HERO */
-.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative;overflow:hidden;padding:0 20px 40px;text-align:center;background:#000 url(hero.jpg) center/cover no-repeat;color:#faf9f6;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(0,0,0,.7) 100%);z-index:0;}
+.hero{display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;padding:0;text-align:center;background:#000;color:#faf9f6;max-width:880px;margin:0 auto;border-radius:0 0 12px 12px;}
+.hero-overlay{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,transparent,rgba(0,0,0,.8));z-index:1;}
 .hero>*{position:relative;z-index:1;}
 .hero-unused{opacity:.04;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.15) 40px);pointer-events:none;}
 .hero>*{position:relative;z-index:1;}.hero-top{font-size:clamp(11px,2vw,14px);letter-spacing:.3em;color:rgba(255,255,255,.4);margin:0 0 24px;font-weight:300;}
@@ -24,7 +24,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','N
 .hero-vs{font-size:clamp(20px,4vw,36px);font-weight:900;color:rgba(255,255,255,.15);align-self:center;}
 .hero-punch{margin:40px 0 0;font-size:clamp(16px,3.5vw,28px);font-weight:700;line-height:1.5;}
 .hero-punch .em{background:var(--bad);color:#fff;padding:2px 8px;display:inline-block;margin:2px 0;}
-.hero-cta{display:inline-block;margin:32px 0 0;padding:14px 40px;background:var(--bad);color:#fff;border:none;border-radius:30px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;}
+.hero-cta{display:inline-block;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);padding:14px 40px;background:var(--bad);color:#fff;border:none;border-radius:30px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;}
 .hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(216,90,48,.4);}
 .hero-scroll{margin:40px 0 0;font-size:12px;color:rgba(255,255,255,.3);animation:pulse 2s infinite;}.hero-scroll span{display:block;font-size:24px;margin:4px 0 0;}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
@@ -83,9 +83,9 @@ svg text{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN
 </head>
 <body>
 <section class="hero" id="hero">
+  <img src="hero.jpg" alt="あなたは本当に自由ですか — 42% × 11%" style="width:100%;display:block;">
   <div class="hero-overlay"></div>
   <a class="hero-cta" href="#main" onclick="document.getElementById('main').scrollIntoView({behavior:'smooth'});return false;">数字を見る ↓</a>
-  <div class="hero-scroll">scroll<span>↓</span></div>
 </section>
 
 <div class="wrap" id="main">
